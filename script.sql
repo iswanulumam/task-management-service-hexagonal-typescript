@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+  email TEXT NOT NULL
 );
 
 -- Create Tasks Table
@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS tasks (
 );
 
 -- Insert users
-INSERT INTO users (username, password) VALUES ('johndoe', 'securepassword123');
-INSERT INTO users (username, password) VALUES ('janedoe', 'anotherpassword456');
+INSERT INTO users (username, email) VALUES ('johndoe', 'john.doe@example.com');
+INSERT INTO users (username, email) VALUES ('janedoe', 'jane.doe@example.com');
 
 -- Insert tasks
 INSERT INTO tasks (title, description, completed, userId) VALUES ('Finish homework', 'Complete the math homework assigned in class', 0, 1);

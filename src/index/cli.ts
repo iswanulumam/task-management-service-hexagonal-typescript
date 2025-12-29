@@ -16,8 +16,15 @@ program
   .requiredOption('-i, --id <id>', 'ID of the user to fetch')
   .action(async (options) => {
     const { id } = options;
+    const userId = parseInt(id, 10);
+    
+    if (isNaN(userId) || userId <= 0) {
+      console.error('Error: Invalid user ID. ID must be a positive number.');
+      process.exit(1);
+    }
+    
     try {
-        const user = await userController.getUserById(parseInt(id, 10));
+        const user = await userController.getUserById(userId);
         if (user) {
           console.log('<< RESULT >>');
           console.log(`ID: ${user.id}`);
@@ -28,6 +35,7 @@ program
         }
       } catch (error) {
         console.error('Error fetching user:', error);
+        process.exit(1);
       }
   });
 

@@ -4,17 +4,20 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/app.js",
-    "dev": "nodemon"
+    "start": "node dist/index/rest.js",
+    "dev": "nodemon",
+    "lint": "echo 'Linting not configured yet'",
+    "test": "echo 'Tests not configured yet'"
   },
-  "keywords": [],
+  "keywords": ["task-management", "hexagonal-architecture", "typescript", "express", "sqlite"],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Task Management Service built with Hexagonal Architecture in TypeScript",
   "dependencies": {
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "gulp": "^5.0.0",
     "reflect-metadata": "^0.2.2",
@@ -25,6 +28,7 @@
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^22.5.2",
+    "@types/dotenv": "^8.2.0",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
