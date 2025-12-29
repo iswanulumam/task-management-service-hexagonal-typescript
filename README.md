@@ -1,126 +1,273 @@
-# Task Management Service
+# 🚀 Task Management Service
 
-A task management service built with **Hexagonal Architecture** (Ports and Adapters) in TypeScript, using Express.js and SQLite.
+<div align="center">
 
-## Architecture
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 
-This project follows the **Hexagonal Architecture** pattern, which separates the business logic from external concerns:
+**A production-ready task management service built with Hexagonal Architecture (Ports & Adapters) pattern in TypeScript**
 
-- **Domain Layer** (`src/application/domain/`): Core business entities and services
-- **Ports** (`src/application/port/`): Interfaces defining contracts
-- **Adapters** (`src/adapter/`):
-  - **Inbound (In)**: Web controllers, CLI controllers
-  - **Outbound (Out)**: Database repositories, external services
+[Features](#-features) • [Architecture](#-architecture) • [Quick Start](#-quick-start) • [API Documentation](#-api-documentation) • [Project Structure](#-project-structure)
 
-## Features
+</div>
 
-- ✅ RESTful API for user management
-- ✅ CLI interface for user operations
-- ✅ SQLite database integration
-- ✅ Input validation using class-validator
-- ✅ Structured logging
-- ✅ Environment configuration support
-- ✅ Error handling and standardized error responses
-- ✅ Health check endpoint
+---
 
-## Prerequisites
+## 📋 Table of Contents
 
-- Node.js (v18 or higher)
-- npm or yarn
-- TypeScript
+- [Overview](#-overview)
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Tech Stack](#-tech-stack)
+- [Quick Start](#-quick-start)
+- [API Documentation](#-api-documentation)
+- [Project Structure](#-project-structure)
+- [Development](#-development)
+- [Contributing](#-contributing)
 
-## Installation
+---
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd task-management-service-hexagonal-typescript
+## 🎯 Overview
+
+This project demonstrates a **clean, maintainable, and scalable** backend service built using the **Hexagonal Architecture** (also known as Ports & Adapters) pattern. It showcases best practices in:
+
+- ✅ **Separation of Concerns** - Business logic isolated from infrastructure
+- ✅ **Dependency Inversion** - High-level modules don't depend on low-level modules
+- ✅ **Testability** - Easy to test with mockable interfaces
+- ✅ **Flexibility** - Easy to swap implementations (e.g., SQLite → PostgreSQL)
+- ✅ **Type Safety** - Full TypeScript with strict mode
+- ✅ **Production Ready** - Error handling, logging, validation, and more
+
+### Why Hexagonal Architecture?
+
+The Hexagonal Architecture pattern allows the application core to be independent of external concerns like databases, web frameworks, or CLI interfaces. This makes the codebase:
+
+- **Maintainable** - Changes to infrastructure don't affect business logic
+- **Testable** - Business logic can be tested without external dependencies
+- **Flexible** - Easy to add new adapters (GraphQL, gRPC, different databases)
+- **Portable** - Core logic can be reused across different platforms
+
+---
+
+## ✨ Features
+
+### Core Functionality
+- 🔐 **User Management** - Create and retrieve users via REST API
+- 💻 **CLI Interface** - Command-line interface for user operations
+- 🗄️ **SQLite Database** - Lightweight, file-based database
+- ✅ **Input Validation** - Class-validator for request validation
+- 📝 **Structured Logging** - Custom logger with multiple log levels
+- 🔧 **Environment Configuration** - Configurable via environment variables
+
+### Production Features
+- 🛡️ **Error Handling** - Comprehensive error handling with standardized responses
+- 🏥 **Health Checks** - Health endpoint for monitoring
+- 📊 **Type Safety** - Full TypeScript with strict mode enabled
+- 🎯 **RESTful API** - Clean, RESTful API design
+- 📦 **Modular Design** - Clean separation of concerns
+
+---
+
+## 🏗️ Architecture
+
+This project follows the **Hexagonal Architecture** pattern, which separates the application into three main layers:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Application Core                          │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              Domain Layer                             │   │
+│  │  • Entities (User)                                   │   │
+│  │  • Domain Services (UserService)                      │   │
+│  └──────────────────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              Ports (Interfaces)                       │   │
+│  │  • UserRepository (Port)                             │   │
+│  │  • UserService (Port)                                │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+        ┌───────────────────┴───────────────────┐
+        │                                       │
+┌───────▼────────┐                    ┌───────▼────────┐
+│  Inbound       │                    │  Outbound       │
+│  Adapters      │                    │  Adapters       │
+│                │                    │                 │
+│  • Web         │                    │  • SQLite       │
+│    Controller  │                    │    Repository   │
+│  • CLI         │                    │  • (Future:     │
+│    Controller  │                    │     PostgreSQL) │
+└────────────────┘                    └─────────────────┘
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+### Layer Breakdown
 
-3. Set up environment variables (optional):
-```bash
-cp .env.example .env
-```
+#### 1. **Domain Layer** (`src/application/domain/`)
+The core business logic, independent of external frameworks:
+- **Entities**: Domain models (e.g., `User`)
+- **Services**: Business logic implementations
 
-Edit `.env` file:
-```
-PORT=3000
-DB_PATH=./db_sqlite/database.sqlite
-NODE_ENV=development
-```
+#### 2. **Ports** (`src/application/port/`)
+Interfaces that define contracts between layers:
+- **Repository Ports**: Define data access contracts
+- **Service Ports**: Define business service contracts
 
-4. Initialize the database:
-```bash
-sqlite3 db_sqlite/database.sqlite < script.sql
-```
+#### 3. **Adapters** (`src/adapter/`)
+Implementations that connect the core to external systems:
 
-## Usage
+**Inbound Adapters** (Driving/Input):
+- `web/` - REST API controllers
+- `cli/` - Command-line interface controllers
 
-### Development Mode
+**Outbound Adapters** (Driven/Output):
+- `sqlite/` - SQLite database repository implementation
 
-Start the development server with hot-reload:
+### Benefits of This Architecture
+
+1. **Independence**: Core business logic doesn't depend on Express, SQLite, or CLI
+2. **Testability**: Easy to mock ports for unit testing
+3. **Flexibility**: Can swap SQLite for PostgreSQL without changing business logic
+4. **Clarity**: Clear boundaries between layers
+
+---
+
+## 🛠️ Tech Stack
+
+### Core Technologies
+- **TypeScript** - Type-safe JavaScript
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **SQLite** - Embedded database
+
+### Key Libraries
+- **class-validator** - Decorator-based validation
+- **class-transformer** - Object transformation
+- **commander** - CLI framework
+- **dotenv** - Environment variable management
+
+### Development Tools
+- **TypeScript** - Compiler with strict mode
+- **nodemon** - Development server with hot-reload
+- **ts-node** - TypeScript execution
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Node.js** >= 18.0.0
+- **npm** >= 9.0.0 (or **yarn** >= 1.22.0)
+- **SQLite3** (usually comes with Node.js)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd task-management-service-hexagonal-typescript
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables** (optional)
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env`:
+   ```env
+   PORT=3000
+   DB_PATH=./db_sqlite/database.sqlite
+   NODE_ENV=development
+   ```
+
+4. **Initialize the database**
+   ```bash
+   sqlite3 db_sqlite/database.sqlite < script.sql
+   ```
+
+### Running the Application
+
+#### Development Mode (with hot-reload)
 ```bash
 npm run dev
 ```
+Server starts at `http://localhost:3000`
 
-The server will start on `http://localhost:3000` (or the port specified in `.env`).
-
-### Production Mode
-
-1. Build the project:
+#### Production Mode
 ```bash
 npm run build
-```
-
-2. Start the server:
-```bash
 npm start
 ```
 
-### CLI Usage
-
-Get a user by ID:
+#### CLI Usage
 ```bash
+# Build first
 npm run build
-node dist/index/cli.js get-user --id 1
-```
 
-Or using Gulp:
-```bash
+# Get user by ID
+node dist/index/cli.js get-user --id 1
+
+# Or using Gulp
 gulp get-user --id 1
 ```
 
-## API Endpoints
+---
 
-### Health Check
+## 📚 API Documentation
 
-**GET** `/health`
+### Base URL
+```
+http://localhost:3000
+```
 
-Returns server status.
+### Endpoints
+
+#### 🏥 Health Check
+
+Check if the server is running.
+
+**Request:**
+```http
+GET /health
+```
 
 **Response:**
 ```json
 {
   "status": "ok",
-  "timestamp": "2024-01-01T00:00:00.000Z"
+  "timestamp": "2024-01-15T10:30:00.000Z"
 }
 ```
 
-### Get User by ID
+**Example:**
+```bash
+curl http://localhost:3000/health
+```
 
-**GET** `/users/:id`
+---
 
-Retrieves a user by their ID.
+#### 👤 Get User by ID
+
+Retrieve a user by their unique identifier.
+
+**Request:**
+```http
+GET /users/:id
+```
 
 **Parameters:**
-- `id` (path parameter): User ID (must be a positive integer)
+| Parameter | Type   | Location | Required | Description           |
+|-----------|--------|----------|----------|-----------------------|
+| id        | number | path     | Yes      | User ID (positive integer) |
 
-**Success Response (200):**
+**Success Response (200 OK):**
 ```json
 {
   "id": 1,
@@ -130,20 +277,29 @@ Retrieves a user by their ID.
 ```
 
 **Error Responses:**
-- `400 Bad Request`: Invalid user ID
-- `404 Not Found`: User not found
-- `500 Internal Server Error`: Server error
+
+| Status Code | Description                | Response Body                              |
+|-------------|----------------------------|--------------------------------------------|
+| 400         | Invalid user ID            | `{"error": "Invalid user ID", "code": "INVALID_USER_ID"}` |
+| 404         | User not found             | `{"error": "User not found", "code": "USER_NOT_FOUND"}` |
+| 500         | Internal server error      | `{"error": "Internal server error", "code": "INTERNAL_ERROR"}` |
 
 **Example:**
 ```bash
 curl http://localhost:3000/users/1
 ```
 
-### Create User
+---
 
-**POST** `/users`
+#### ➕ Create User
 
-Creates a new user.
+Create a new user account.
+
+**Request:**
+```http
+POST /users
+Content-Type: application/json
+```
 
 **Request Body:**
 ```json
@@ -153,7 +309,11 @@ Creates a new user.
 }
 ```
 
-**Success Response (201):**
+**Validation Rules:**
+- `username`: Required, string, 3-20 characters
+- `email`: Required, valid email format
+
+**Success Response (201 Created):**
 ```json
 {
   "id": 3,
@@ -163,88 +323,141 @@ Creates a new user.
 ```
 
 **Error Responses:**
-- `400 Bad Request`: Missing required fields or invalid email format
-- `500 Internal Server Error`: Server error
+
+| Status Code | Description                | Response Body                              |
+|-------------|----------------------------|--------------------------------------------|
+| 400         | Missing required fields    | `{"error": "Username and email are required", "code": "MISSING_REQUIRED_FIELDS"}` |
+| 400         | Invalid email format       | `{"error": "Invalid email format", "code": "INVALID_EMAIL_FORMAT"}` |
+| 400         | User creation failed        | `{"error": "Failed to create user", "code": "USER_CREATION_FAILED"}` |
+| 500         | Internal server error      | `{"error": "Internal server error", "code": "INTERNAL_ERROR"}` |
 
 **Example:**
 ```bash
 curl -X POST http://localhost:3000/users \
   -H "Content-Type: application/json" \
-  -d '{"username": "newuser", "email": "newuser@example.com"}'
+  -d '{
+    "username": "newuser",
+    "email": "newuser@example.com"
+  }'
 ```
 
-## Error Response Format
+### Error Response Format
 
-All error responses follow this format:
+All error responses follow a consistent format:
 
 ```json
 {
-  "error": "Error message",
-  "code": "ERROR_CODE",
-  "details": {}
+  "error": "Human-readable error message",
+  "code": "MACHINE_READABLE_CODE",
+  "details": {
+    // Optional additional details
+  }
 }
 ```
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```
-src/
-├── adapter/
-│   ├── in/              # Inbound adapters (controllers)
-│   │   ├── cli/         # CLI controllers
-│   │   └── web/         # Web controllers
-│   └── out/             # Outbound adapters
-│       └── sqlite/      # SQLite repository implementation
-├── application/
-│   ├── domain/          # Domain layer
-│   │   ├── entity/      # Domain entities
-│   │   └── services/    # Domain services
-│   └── port/            # Ports (interfaces)
-├── index/               # Entry points
-│   ├── cli.ts           # CLI entry point
-│   └── rest.ts          # REST API entry point
-└── utils/               # Utility modules
-    └── logger.ts        # Logging utility
+task-management-service-hexagonal-typescript/
+│
+├── src/
+│   ├── adapter/                    # Adapters (Ports & Adapters pattern)
+│   │   ├── in/                     # Inbound adapters (driving)
+│   │   │   ├── cli/                # CLI controllers
+│   │   │   │   └── UserController.ts
+│   │   │   └── web/                # Web controllers
+│   │   │       └── UserController.ts
+│   │   └── out/                    # Outbound adapters (driven)
+│   │       └── sqlite/             # SQLite implementation
+│   │           ├── Database.ts     # Database connection
+│   │           └── UserRepository.ts
+│   │
+│   ├── application/                # Application core
+│   │   ├── domain/                 # Domain layer
+│   │   │   ├── entity/             # Domain entities
+│   │   │   │   └── User.ts
+│   │   │   └── services/           # Domain services
+│   │   │       └── UserService.ts
+│   │   └── port/                   # Ports (interfaces)
+│   │       ├── UserRepository.ts
+│   │       └── UserService.ts
+│   │
+│   ├── index/                      # Entry points
+│   │   ├── cli.ts                  # CLI entry point
+│   │   └── rest.ts                 # REST API entry point
+│   │
+│   └── utils/                      # Utility modules
+│       └── logger.ts               # Structured logging
+│
+├── db_sqlite/                      # SQLite database files
+│   └── database.sqlite
+│
+├── script.sql                      # Database schema
+├── .env.example                    # Environment variables template
+├── package.json                    # Dependencies and scripts
+├── tsconfig.json                   # TypeScript configuration
+└── README.md                       # This file
 ```
 
-## Configuration
+### Key Directories
 
-### Environment Variables
+- **`src/adapter/in/`** - Controllers that receive input (REST, CLI)
+- **`src/adapter/out/`** - Implementations that output data (database, external APIs)
+- **`src/application/domain/`** - Pure business logic, no external dependencies
+- **`src/application/port/`** - Interfaces that define contracts
+- **`src/index/`** - Application entry points
 
-- `PORT`: Server port (default: 3000)
-- `DB_PATH`: Path to SQLite database file (default: `./db_sqlite/database.sqlite`)
-- `NODE_ENV`: Environment mode (development/production)
+---
 
-### TypeScript Configuration
+## 💻 Development
 
-The project uses TypeScript with strict mode enabled. Configuration is in `tsconfig.json`.
-
-## Development
-
-### Building
+### Building the Project
 
 ```bash
 npm run build
 ```
 
-### Running Tests
+This compiles TypeScript to JavaScript in the `dist/` directory.
 
-Tests are not yet configured. To add tests:
-1. Install a testing framework (Jest, Mocha, etc.)
-2. Create test files in a `__tests__` or `test` directory
-3. Add test scripts to `package.json`
+### Development Server
 
-### Linting
+```bash
+npm run dev
+```
 
-Linting is not yet configured. To add linting:
-1. Install ESLint and Prettier
-2. Create configuration files
-3. Add lint scripts to `package.json`
+Starts the server with `nodemon` for automatic reloading on file changes.
 
-## Database Schema
+### TypeScript Configuration
 
-### Users Table
+The project uses TypeScript with **strict mode** enabled:
+- Strict type checking
+- No implicit `any`
+- Strict null checks
+- Source maps for debugging
 
+### Logging
+
+The project includes a custom logger (`src/utils/logger.ts`) with the following levels:
+
+- **ERROR** - Error messages (always logged)
+- **WARN** - Warning messages (always logged)
+- **INFO** - Informational messages (always logged)
+- **DEBUG** - Debug messages (only in development)
+
+Example usage:
+```typescript
+import logger from './utils/logger';
+
+logger.info('Server started');
+logger.error('Error occurred:', error);
+logger.debug('Debug information');
+```
+
+### Database Schema
+
+#### Users Table
 ```sql
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -253,8 +466,7 @@ CREATE TABLE users (
 );
 ```
 
-### Tasks Table
-
+#### Tasks Table
 ```sql
 CREATE TABLE tasks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -266,34 +478,96 @@ CREATE TABLE tasks (
 );
 ```
 
-## Logging
+### Environment Variables
 
-The project uses a custom logger utility (`src/utils/logger.ts`) that provides:
-- Timestamped log messages
-- Different log levels (ERROR, WARN, INFO, DEBUG)
-- JSON formatting for structured data
-- Environment-aware debug logging
+| Variable   | Default                          | Description                    |
+|------------|----------------------------------|--------------------------------|
+| `PORT`     | `3000`                           | Server port number             |
+| `DB_PATH`  | `./db_sqlite/database.sqlite`    | Path to SQLite database file   |
+| `NODE_ENV` | `development`                    | Environment mode                |
 
-## Contributing
+---
 
-1. Follow the hexagonal architecture pattern
-2. Maintain separation of concerns
-3. Add proper error handling
-4. Use the logger utility instead of console.log
-5. Follow TypeScript best practices
+## 🤝 Contributing
 
-## License
+Contributions are welcome! Please follow these guidelines:
 
-ISC
+### Development Guidelines
 
-## Future Improvements
+1. **Follow Hexagonal Architecture**
+   - Keep business logic in the domain layer
+   - Use ports (interfaces) for contracts
+   - Implement adapters for external concerns
 
-- [ ] Add authentication and authorization
-- [ ] Implement task management endpoints
-- [ ] Add comprehensive test coverage
-- [ ] Add API documentation (Swagger/OpenAPI)
-- [ ] Add rate limiting
-- [ ] Add security headers middleware
-- [ ] Add database migrations
-- [ ] Add request validation middleware
-- [ ] Add connection pooling for database
+2. **Code Quality**
+   - Use TypeScript strict mode
+   - Add proper error handling
+   - Use the logger utility (not `console.log`)
+   - Follow existing code style
+
+3. **Testing** (when tests are added)
+   - Write unit tests for domain logic
+   - Write integration tests for adapters
+   - Mock ports in tests
+
+4. **Documentation**
+   - Update README for new features
+   - Add JSDoc comments for public APIs
+   - Keep architecture diagrams updated
+
+### Pull Request Process
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🗺️ Roadmap
+
+### Planned Features
+
+- [ ] **Authentication & Authorization** - JWT-based auth system
+- [ ] **Task Management** - Full CRUD operations for tasks
+- [ ] **API Documentation** - Swagger/OpenAPI integration
+- [ ] **Testing** - Comprehensive test suite (Jest)
+- [ ] **Database Migrations** - Migration system for schema changes
+- [ ] **Rate Limiting** - Protect API from abuse
+- [ ] **Security Headers** - Helmet.js integration
+- [ ] **Request Validation Middleware** - Centralized validation
+- [ ] **Docker Support** - Containerization
+
+### Architecture Improvements
+
+- [ ] **Event Sourcing** - Event-driven architecture
+- [ ] **CQRS** - Command Query Responsibility Segregation
+- [ ] **Multiple Database Support** - PostgreSQL, MongoDB adapters
+- [ ] **Caching Layer** - Redis integration
+- [ ] **Message Queue** - RabbitMQ/Kafka for async processing
+
+---
+
+## 🙏 Acknowledgments
+
+- **Hexagonal Architecture** - Alistair Cockburn
+- **Clean Architecture** - Robert C. Martin
+- **TypeScript** - Microsoft
+- **Express.js** - StrongLoop
+
+---
+
+<div align="center">
+
+**Built with ❤️ using Hexagonal Architecture**
+
+[⭐ Star this repo](https://github.com/iswanulumam/task-management-service-hexagonal-typescript) if you find it helpful!
+
+</div>

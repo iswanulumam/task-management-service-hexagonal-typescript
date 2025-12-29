@@ -11,7 +11,7 @@
   },
   "keywords": ["task-management", "hexagonal-architecture", "typescript", "express", "sqlite"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "Task Management Service built with Hexagonal Architecture in TypeScript",
   "dependencies": {
     "class-transformer": "^0.5.1",
